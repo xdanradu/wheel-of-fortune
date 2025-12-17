@@ -11,9 +11,9 @@ const stats = document.querySelector('.stats');
 const SEGMENT_COLORS = [
     "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
     "#9966FF", "#FF9F40", "#E7E9ED", "#76D7C4",
-    "#F7464A", "#46BFBD", "#FDB45C", "#949FB1"
+    "#F7464A", "#46BFBD", "#FDB45C"
 ];
-const WHEEL_STROKE_COLOR = "#aaa";
+const WHEEL_STROKE_COLOR = "#dedede";
 const TEXT_COLOR = "white";
 const TEXT_SHADOW_COLOR = "rgba(0,0,0,0.8)";
 const REMOVE_BUTTON_BG_COLOR = "rgba(0, 0, 0, 0.1)";
