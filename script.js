@@ -14,7 +14,7 @@ let names = [
 ];
 
 function updateStats() {
-    stats.innerHTML = `#participants: ${names.length} #chance to win: ${Math.trunc((1 / names.length) * 100)}%`;
+    stats.innerHTML = `${names.length} participants, ${Math.trunc((1 / names.length) * 100)}% chance to win`;
 }
 updateStats();
 
