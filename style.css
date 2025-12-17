@@ -65,7 +65,7 @@ canvas {
     height: 0;
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
-    border-top: 40px solid rgb(45, 45, 45);
+    border-top: 40px solid rgb(25, 25, 25);
     filter: drop-shadow(0 2px 4px rgb(3, 7, 13));
 }
 
