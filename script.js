@@ -50,7 +50,7 @@ let hoveredNameIndex = -1;
 let winningIndex = -1;
 let audioCtx = null;
 let lastSoundIndex = -1;
-let isSoundEnabled = true;
+let isSoundEnabled = false;
 
 function drawRouletteWheel() {
     if (canvas.getContext) {
@@ -380,3 +380,8 @@ soundBtn.addEventListener('click', () => {
 
 // Initial draw
 updateWheel();
+
+if (soundBtn && !isSoundEnabled) {
+    soundBtn.textContent = "🔇";
+    soundBtn.classList.add('muted');
+}
