@@ -8,6 +8,20 @@ const nameList = document.getElementById('name-list');
 const arrowContainer = document.querySelector('.arrow-container');
 const stats = document.querySelector('.stats');
 
+const SEGMENT_COLORS = [
+    "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
+    "#9966FF", "#FF9F40", "#E7E9ED", "#76D7C4",
+    "#F7464A", "#46BFBD", "#FDB45C", "#949FB1"
+];
+const WHEEL_STROKE_COLOR = "#aaa";
+const TEXT_COLOR = "white";
+const TEXT_SHADOW_COLOR = "rgba(0,0,0,0.8)";
+const REMOVE_BUTTON_BG_COLOR = "rgba(0, 0, 0, 0.1)";
+const REMOVE_BUTTON_ICON_COLOR = "black";
+const CENTER_CIRCLE_COLOR = "white";
+const CENTER_DOT_COLOR = "rgb(21, 52, 255)";
+const OUTSIDE_RADIUS = 230;
+
 let names = [
     "Alice", "Bob", "Charlie", "David",
     "Eve", "Frank", "Grace", "Heidi"
@@ -17,11 +31,6 @@ function updateStats() {
     stats.innerHTML = `${names.length} participants, ${Math.trunc((1 / names.length) * 100)}% chance to win`;
 }
 updateStats();
-
-const colors = [
-    "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
-    "#9966FF", "#FF9F40", "#E7E9ED", "#76D7C4"
-];
 
 let startAngle = 0;
 let arc = Math.PI / (names.length / 2);
@@ -39,13 +48,13 @@ let hoveredNameIndex = -1;
 
 function drawRouletteWheel() {
     if (canvas.getContext) {
-        const outsideRadius = 230;
+        const outsideRadius = OUTSIDE_RADIUS;
 
         const insideRadius = 20;
 
         ctx.clearRect(0, 0, 500, 500);
 
-        ctx.strokeStyle = "#aaa";
+        ctx.strokeStyle = WHEEL_STROKE_COLOR;
         ctx.lineWidth = 1;
 
         ctx.font = 'bold 26px Helvetica, Arial';
@@ -55,7 +64,7 @@ function drawRouletteWheel() {
             const angle = startAngle + i * arc;
 
             // Draw segment
-            ctx.fillStyle = colors[i % colors.length];
+            ctx.fillStyle = SEGMENT_COLORS[i % SEGMENT_COLORS.length];
             ctx.beginPath();
             ctx.arc(250, 250, outsideRadius, angle, angle + arc, false);
             ctx.arc(250, 250, insideRadius, angle + arc, angle, true);
@@ -64,9 +73,9 @@ function drawRouletteWheel() {
 
             // Draw text
             ctx.save();
-            ctx.shadowColor = "rgba(0,0,0,0.8)";
+            ctx.shadowColor = TEXT_SHADOW_COLOR;
             ctx.shadowBlur = 5;
-            ctx.fillStyle = "white";
+            ctx.fillStyle = TEXT_COLOR;
             ctx.translate(250 + Math.cos(angle + arc / 2) * (outsideRadius - 20),
                 250 + Math.sin(angle + arc / 2) * (outsideRadius - 20));
             ctx.rotate(angle + arc / 2 + Math.PI);
@@ -74,39 +83,35 @@ function drawRouletteWheel() {
             ctx.fillText(text, 0, 8);
             ctx.restore();
 
-            // Draw X button
-            if (i === hoveredNameIndex) {
-                ctx.save();
-                ctx.translate(250 + Math.cos(angle + arc / 2) * (outsideRadius - 45),
-                    250 + Math.sin(angle + arc / 2) * (outsideRadius - 45));
-                ctx.rotate(angle + arc / 2 + Math.PI / 2);
+            // Draw Remove button
+            ctx.save();
+            ctx.translate(250 + Math.cos(angle + arc / 2) * (outsideRadius + 10),
+                250 + Math.sin(angle + arc / 2) * (outsideRadius + 10));
+            ctx.rotate(angle + arc / 2 + Math.PI / 2);
 
-                ctx.fillStyle = "rgba(255, 255, 255, 1)";
-                ctx.beginPath();
-                ctx.arc(0, 0, 10, 0, 2 * Math.PI);
-                ctx.fill();
+            ctx.fillStyle = "white";
+            ctx.beginPath();
+            ctx.arc(0, 0, 15, 0, 2 * Math.PI);
+            ctx.fill();
 
-                ctx.strokeStyle = "#333";
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(-4, -4);
-                ctx.lineTo(4, 4);
-                ctx.moveTo(4, -4);
-                ctx.lineTo(-4, 4);
-                ctx.stroke();
-                ctx.restore();
-            }
+            ctx.strokeStyle = SEGMENT_COLORS[i % SEGMENT_COLORS.length];
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(0, -5);
+            ctx.lineTo(0, 5);
+            ctx.stroke();
+            ctx.restore();
         }
 
         // Draw Arrow (Static on canvas if needed, but we used CSS for the pointer)
         // But let's draw a center circle for aesthetics
-        ctx.fillStyle = "white";
+        ctx.fillStyle = CENTER_CIRCLE_COLOR;
         ctx.beginPath();
         ctx.arc(250, 250, insideRadius - 5, 0, 2 * Math.PI);
         ctx.fill();
 
         // Center decoration
-        ctx.fillStyle = "#333";
+        ctx.fillStyle = CENTER_DOT_COLOR;
         ctx.beginPath();
         ctx.arc(250, 250, 10, 0, 2 * Math.PI);
         ctx.fill();
@@ -244,7 +249,7 @@ canvas.addEventListener('click', (e) => {
     const y = e.clientY - rect.top;
     const centerX = 250;
     const centerY = 250;
-    const closeButtonRadius = 185;
+    const closeButtonRadius = OUTSIDE_RADIUS + 10;
     const buttonSize = 15; // Hit area radius
 
     for (let i = 0; i < names.length; i++) {
@@ -272,7 +277,7 @@ canvas.addEventListener('mousemove', (e) => {
     const y = e.clientY - rect.top;
     const centerX = 250;
     const centerY = 250;
-    const closeButtonRadius = 185;
+    const closeButtonRadius = OUTSIDE_RADIUS + 10;
     const buttonSize = 15;
 
     let newHoveredIndex = -1;
