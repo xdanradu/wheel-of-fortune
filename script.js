@@ -20,8 +20,9 @@ const TEXT_SHADOW_COLOR = "rgba(0,0,0,0.8)";
 const REMOVE_BUTTON_BG_COLOR = "rgba(0, 0, 0, 0.1)";
 const REMOVE_BUTTON_ICON_COLOR = "black";
 const CENTER_CIRCLE_COLOR = "white";
-const CENTER_DOT_COLOR = "rgb(0, 0, 0)";
+const CENTER_DOT_COLOR = "rgb(44, 44, 44)";
 const OUTSIDE_RADIUS = 230;
+const WINNER_COLOR = "crimson";
 
 let names = [
     "Alice", "Bob", "Charlie", "David",
@@ -78,7 +79,7 @@ function drawRouletteWheel() {
                 ctx.save();
                 ctx.filter = "brightness(0.8)";
                 // ctx.fill();
-                ctx.fillStyle = "rgb(21, 52, 255)";
+                ctx.fillStyle = WINNER_COLOR;
                 ctx.fill();
                 ctx.restore();
             } else {

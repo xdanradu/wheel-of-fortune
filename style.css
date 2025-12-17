@@ -65,7 +65,7 @@ canvas {
     height: 0;
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
-    border-top: 40px solid rgb(21, 52, 255);
+    border-top: 40px solid rgb(45, 45, 45);
     filter: drop-shadow(0 2px 4px rgb(3, 7, 13));
 }
 
@@ -193,8 +193,13 @@ button:disabled {
     font-family: var(--font-family);
     color: var(--secondary-color);
     z-index: 100;
-    font-size: 0.9rem;
     line-height: 1.5;
+
+    padding: 10px 20px;
+    border-radius: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    font-family: var(--font-family);
+    font-size: 0.9rem;
     border: 1px solid #eee;
 }
 
