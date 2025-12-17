@@ -8,12 +8,30 @@ const nameList = document.getElementById('name-list');
 const arrowContainer = document.querySelector('.arrow-container');
 const stats = document.querySelector('.stats');
 const soundBtn = document.getElementById('sound-btn');
+const paletteBtn = document.getElementById('palette-btn');
 
 const SEGMENT_COLORS = [
+    "#9CAF88", // Sage Green
+    "#FFD700", // Butter Yellow
+    "#4B0082", // Aura Indigo
+    "#FF7F50", // Sunset Coral
+    "#000080", // Deep Blue
+    "#DC143C", // Crimson
+    "#2E8B57", // Sea Green
+    "#DAA520", // Goldenrod
+    "#8A2BE2", // Blue Violet
+    "#FF1493", // Deep Pink
+    "#00CED1"  // Dark Turquoise
+];
+
+const SEGMENT_COLORS2 = [
     "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
     "#9966FF", "#FF9F40", "#E7E9ED", "#76D7C4",
     "#F7464A", "#46BFBD", "#FDB45C"
 ];
+
+let activeColors = SEGMENT_COLORS;
+
 const WHEEL_STROKE_COLOR = "#dedede";
 const TEXT_COLOR = "white";
 const TEXT_SHADOW_COLOR = "rgba(0,0,0,0.8)";
@@ -25,9 +43,25 @@ const OUTSIDE_RADIUS = 230;
 const WINNER_COLOR = "crimson";
 
 let names = [
-    "Alice", "Bob", "Charlie", "David",
-    "Eve", "Frank", "Grace", "Heidi"
+    "Dan", "Wilco", "Andreea", "Veronika",
+    "Vivek", "Claudiu", "Stefania", "Alex", "Sener"
 ];
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+shuffleArray(names);
+shuffleArray(SEGMENT_COLORS);
+shuffleArray(SEGMENT_COLORS2);
+
+// If it's Thursday (day 4), remove Stefania
+if (new Date().getDay() === 4) {
+    names = names.filter(name => name !== "Stefania");
+}
 
 function updateStats() {
     stats.innerHTML = `${names.length} participants, ${Math.trunc((1 / names.length) * 100)}% chance to win`;
@@ -70,7 +104,7 @@ function drawRouletteWheel() {
             const angle = startAngle + i * arc;
 
             // Draw segment
-            ctx.fillStyle = SEGMENT_COLORS[i % SEGMENT_COLORS.length];
+            ctx.fillStyle = activeColors[i % activeColors.length];
             ctx.beginPath();
             ctx.arc(250, 250, outsideRadius, angle, angle + arc, false);
             ctx.arc(250, 250, insideRadius, angle + arc, angle, true);
@@ -110,7 +144,7 @@ function drawRouletteWheel() {
             ctx.arc(0, 0, 15, 0, 2 * Math.PI);
             ctx.fill();
 
-            ctx.strokeStyle = SEGMENT_COLORS[i % SEGMENT_COLORS.length];
+            ctx.strokeStyle = activeColors[i % activeColors.length];
             ctx.lineWidth = 3;
             ctx.beginPath();
             ctx.moveTo(0, -5);
@@ -378,7 +412,25 @@ soundBtn.addEventListener('click', () => {
     }
 });
 
+paletteBtn.addEventListener('click', () => {
+    if (activeColors === SEGMENT_COLORS) {
+        activeColors = SEGMENT_COLORS2;
+        paletteBtn.classList.remove('palette-def');
+        paletteBtn.classList.add('palette-alt');
+    } else {
+        activeColors = SEGMENT_COLORS;
+        paletteBtn.classList.remove('palette-alt');
+        paletteBtn.classList.add('palette-def');
+    }
+    drawRouletteWheel();
+});
+
 // Initial draw
+if (activeColors === SEGMENT_COLORS) {
+    paletteBtn.classList.add('palette-def');
+} else {
+    paletteBtn.classList.add('palette-alt');
+}
 updateWheel();
 
 if (soundBtn && !isSoundEnabled) {
