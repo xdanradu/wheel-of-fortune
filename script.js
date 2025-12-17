@@ -7,6 +7,7 @@ const addBtn = document.getElementById('add-btn');
 const nameList = document.getElementById('name-list');
 const arrowContainer = document.querySelector('.arrow-container');
 const stats = document.querySelector('.stats');
+const soundBtn = document.getElementById('sound-btn');
 
 const SEGMENT_COLORS = [
     "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
@@ -19,7 +20,7 @@ const TEXT_SHADOW_COLOR = "rgba(0,0,0,0.8)";
 const REMOVE_BUTTON_BG_COLOR = "rgba(0, 0, 0, 0.1)";
 const REMOVE_BUTTON_ICON_COLOR = "black";
 const CENTER_CIRCLE_COLOR = "white";
-const CENTER_DOT_COLOR = "rgb(21, 52, 255)";
+const CENTER_DOT_COLOR = "rgb(0, 0, 0)";
 const OUTSIDE_RADIUS = 230;
 
 let names = [
@@ -46,6 +47,9 @@ let lastFrameTime = null;
 let currentRotation = 0;
 let hoveredNameIndex = -1;
 let winningIndex = -1;
+let audioCtx = null;
+let lastSoundIndex = -1;
+let isSoundEnabled = true;
 
 function drawRouletteWheel() {
     if (canvas.getContext) {
@@ -161,6 +165,15 @@ function rotateWheel(timestamp) {
     // Normalize speed to time (assuming 15ms baseline)
     const frameScale = deltaTime / 15;
     startAngle += (spinAngle * frameScale * Math.PI / 180);
+
+    const currentSoundIndex = Math.floor(startAngle / arc);
+    if (currentSoundIndex !== lastSoundIndex) {
+        if (lastSoundIndex !== -1) {
+            playTick();
+        }
+        lastSoundIndex = currentSoundIndex;
+    }
+
     drawRouletteWheel();
     spinTimeout = requestAnimationFrame(rotateWheel);
 }
@@ -201,11 +214,37 @@ function easeOut(t, b, c, d) {
     return c * (t * t * t * t * t + 1) + b;
 }
 
+function playTick() {
+    if (!audioCtx || !isSoundEnabled) return;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(1000, audioCtx.currentTime);
+
+    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.05);
+
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.05);
+}
+
 function spin() {
     if (names.length === 0) {
         alert("Please add at least one name to the wheel!");
         return;
     }
+
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+    lastSoundIndex = Math.floor(startAngle / arc);
+
     spinBtn.disabled = true;
     resultDiv.classList.remove('show');
     resultDiv.classList.add('hidden');
@@ -320,6 +359,21 @@ canvas.addEventListener('mouseleave', () => {
     if (hoveredNameIndex !== -1) {
         hoveredNameIndex = -1;
         drawRouletteWheel();
+    }
+});
+
+soundBtn.addEventListener('click', () => {
+    isSoundEnabled = !isSoundEnabled;
+    if (isSoundEnabled) {
+        soundBtn.textContent = "🔊";
+        soundBtn.classList.remove('muted');
+        // Resume context if it was suspended (though spin handles this too)
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    } else {
+        soundBtn.textContent = "🔇";
+        soundBtn.classList.add('muted');
     }
 });
 
