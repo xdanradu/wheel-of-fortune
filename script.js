@@ -39,16 +39,17 @@ let hoveredNameIndex = -1;
 
 function drawRouletteWheel() {
     if (canvas.getContext) {
-        const outsideRadius = 220;
-        const textRadius = 225;
-        const insideRadius = 25;
+        const outsideRadius = 230;
+
+        const insideRadius = 20;
 
         ctx.clearRect(0, 0, 500, 500);
 
-        ctx.strokeStyle = "#333";
+        ctx.strokeStyle = "#aaa";
         ctx.lineWidth = 1;
 
         ctx.font = 'bold 26px Helvetica, Arial';
+        ctx.textAlign = "left";
 
         for (let i = 0; i < names.length; i++) {
             const angle = startAngle + i * arc;
@@ -63,30 +64,30 @@ function drawRouletteWheel() {
 
             // Draw text
             ctx.save();
-            ctx.shadowColor = "rgba(0,0,0,0.7)";
-            ctx.shadowBlur = 6;
+            ctx.shadowColor = "rgba(0,0,0,0.8)";
+            ctx.shadowBlur = 5;
             ctx.fillStyle = "white";
-            ctx.translate(250 + Math.cos(angle + arc / 2) * textRadius,
-                250 + Math.sin(angle + arc / 2) * textRadius);
-            ctx.rotate(angle + arc / 2 + Math.PI / 2);
+            ctx.translate(250 + Math.cos(angle + arc / 2) * (outsideRadius - 20),
+                250 + Math.sin(angle + arc / 2) * (outsideRadius - 20));
+            ctx.rotate(angle + arc / 2 + Math.PI);
             const text = names[i];
-            ctx.fillText(text, -ctx.measureText(text).width / 2, 0);
+            ctx.fillText(text, 0, 8);
             ctx.restore();
 
             // Draw X button
             if (i === hoveredNameIndex) {
                 ctx.save();
-                ctx.translate(250 + Math.cos(angle + arc / 2) * 185,
-                    250 + Math.sin(angle + arc / 2) * 185);
+                ctx.translate(250 + Math.cos(angle + arc / 2) * (outsideRadius - 45),
+                    250 + Math.sin(angle + arc / 2) * (outsideRadius - 45));
                 ctx.rotate(angle + arc / 2 + Math.PI / 2);
 
-                ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+                ctx.fillStyle = "rgba(255, 255, 255, 1)";
                 ctx.beginPath();
                 ctx.arc(0, 0, 10, 0, 2 * Math.PI);
                 ctx.fill();
 
                 ctx.strokeStyle = "#333";
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 3;
                 ctx.beginPath();
                 ctx.moveTo(-4, -4);
                 ctx.lineTo(4, 4);
