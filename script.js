@@ -45,6 +45,7 @@ let lastFrameTime = null;
 
 let currentRotation = 0;
 let hoveredNameIndex = -1;
+let winningIndex = -1;
 
 function drawRouletteWheel() {
     if (canvas.getContext) {
@@ -68,8 +69,18 @@ function drawRouletteWheel() {
             ctx.beginPath();
             ctx.arc(250, 250, outsideRadius, angle, angle + arc, false);
             ctx.arc(250, 250, insideRadius, angle + arc, angle, true);
+
+            if (i === winningIndex) {
+                ctx.save();
+                ctx.filter = "brightness(0.8)";
+                // ctx.fill();
+                ctx.fillStyle = "rgb(21, 52, 255)";
+                ctx.fill();
+                ctx.restore();
+            } else {
+                ctx.fill();
+            }
             ctx.stroke();
-            ctx.fill();
 
             // Draw text
             ctx.save();
@@ -163,6 +174,8 @@ function stopRotateWheel() {
     const degrees = 2 * startAngle * 180 / Math.PI + 90;
     const arcd = arc * 180 / Math.PI;
     const index = Math.floor((360 - degrees % 360) % 360 / arcd);
+    winningIndex = index;
+    drawRouletteWheel();
 
     ctx.save();
     ctx.font = 'bold 30px Helvetica, Arial';
@@ -196,6 +209,7 @@ function spin() {
     spinBtn.disabled = true;
     resultDiv.classList.remove('show');
     resultDiv.classList.add('hidden');
+    winningIndex = -1;
 
     spinAngleStart = Math.random() * 10 + 10; // 10 to 20 degrees per 15ms
     spinTime = 0;
@@ -207,6 +221,7 @@ function spin() {
 }
 
 function updateWheel() {
+    winningIndex = -1;
     arc = Math.PI / (names.length / 2);
     drawRouletteWheel();
 }
