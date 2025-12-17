@@ -39,13 +39,13 @@ let hoveredNameIndex = -1;
 
 function drawRouletteWheel() {
     if (canvas.getContext) {
-        const outsideRadius = 200;
-        const textRadius = 160;
-        const insideRadius = 50;
+        const outsideRadius = 220;
+        const textRadius = 225;
+        const insideRadius = 25;
 
         ctx.clearRect(0, 0, 500, 500);
 
-        ctx.strokeStyle = "white";
+        ctx.strokeStyle = "#777";
         ctx.lineWidth = 2;
 
         ctx.font = 'bold 26px Helvetica, Arial';
@@ -63,8 +63,8 @@ function drawRouletteWheel() {
 
             // Draw text
             ctx.save();
-            ctx.shadowColor = "rgba(0,0,0,0.5)";
-            ctx.shadowBlur = 4;
+            ctx.shadowColor = "rgba(0,0,0,0.7)";
+            ctx.shadowBlur = 6;
             ctx.fillStyle = "white";
             ctx.translate(250 + Math.cos(angle + arc / 2) * textRadius,
                 250 + Math.sin(angle + arc / 2) * textRadius);
